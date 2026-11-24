@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart';
+
 /// Modelo inicial de tarea. No contiene código de SQLite.
 /// Investiga cómo representar estos campos en una tabla persistente.
 class Tarea {
@@ -10,4 +12,11 @@ class Tarea {
     required this.titulo,
     required this.completada,
   });
+}
+
+// DONE(AdrianoE-Dgz): Realizar estructura de tabla inicial
+class TareaTabla extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get titulo => text().withLength(max: 30)();
+  BoolColumn get completada => boolean()();
 }

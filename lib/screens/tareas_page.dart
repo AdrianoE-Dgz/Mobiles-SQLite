@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../models/tarea.dart';
 
 // Pantalla base SIN persistencia ni operaciones CRUD implementadas.
@@ -13,7 +13,7 @@ class TareasPage extends StatefulWidget {
 class _TareasPageState extends State<TareasPage> {
   final TextEditingController _tituloController = TextEditingController();
 
-  List<Tarea> _tareas = [];
+  final List<Tarea> _tareas = [];
 
   @override
   void initState() {
@@ -21,18 +21,22 @@ class _TareasPageState extends State<TareasPage> {
 
   }
 
+  // TODO(AdrianoE-Dgz): Implementar Registro de Tarea
   void _agregarTarea() {
     _pendiente('Implementar registro de tarea');
   }
 
+  // TODO(AdrianoE-Dgz): Implementar Actualización de Tarea
   void _alternarCompletada(Tarea tarea, bool completada) {
     _pendiente('Implementar actualización de tarea');
   }
 
+  // TODO(AdrianoE-Dgz): Implementar Edición de Tarea
   void _editarTarea(Tarea tarea) {
     _pendiente('Implementar edición de título');
   }
 
+  // TODO(AdrianoE-Dgz): Implementar Eliminación de Tarea
   void _eliminarTarea(Tarea tarea) {
     _pendiente('Implementar eliminación de tarea');
   }

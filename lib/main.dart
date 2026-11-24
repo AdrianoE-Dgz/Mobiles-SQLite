@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:catppuccin_flutter/catppuccin_flutter.dart';
+import 'package:gestor_tareas_local/data/sqlite_handler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'screens/tareas_page.dart';
+import 'theme.dart';
+
+late AppDatabase database;
 
 void main() {
   runApp(const GestorTareasApp());
@@ -15,10 +20,7 @@ class GestorTareasApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gestor de tareas',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
+      theme: catppuccinTheme(catppuccin.frappe),
       home: const TareasPage(),
     );
   }
