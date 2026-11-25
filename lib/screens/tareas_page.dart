@@ -78,8 +78,18 @@ class _TareasPageState extends State<TareasPage> {
   }
 
   // TODO(AdrianoE-Dgz): Implementar Eliminación de Tarea
-  void _eliminarTarea(TareaTablaData tarea) {
-    _pendiente('Implementar eliminación de tarea');
+  void _eliminarTarea(TareaTablaData tarea) async {
+    int idEliminar = tarea.id;
+
+    int estado = await database.eliminarTarea(idEliminar);
+
+    if(estado != 1){
+      _pendiente('Error al eliminar Tarea: ${tarea.titulo}');
+    } else {
+      _pendiente('Tarea "${tarea.titulo}" eliminada');
+    }
+    
+    cargarTareas();
   }
 
   void _pendiente(String mensaje) {
@@ -123,7 +133,7 @@ class _TareasPageState extends State<TareasPage> {
             const SizedBox(height: 8),
             Expanded(
               child: _tareas.isEmpty
-                  ? Center(child: Text('Todavía no hay tareas guardadas $_tareas'))
+                  ? Center(child: Text('Todavía no hay tareas guardadas'))
                   : ListView.builder(
                       itemCount: _tareas.length,
                       itemBuilder: (context, index) {
