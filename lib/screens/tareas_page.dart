@@ -57,9 +57,19 @@ class _TareasPageState extends State<TareasPage> {
     cargarTareas();
   }
 
-  // TODO(AdrianoE-Dgz): Implementar Actualización de Tarea
-  void _alternarCompletada(TareaTablaData tarea, bool completada) {
-    _pendiente('Implementar actualización de tarea');
+  // DONE(AdrianoE-Dgz): Implementar Actualización de Tarea
+  void _alternarCompletada(TareaTablaData tarea, bool completada) async {
+    TareaTablaData newTarea = TareaTablaData(id: tarea.id, titulo: tarea.titulo, completada: completada);
+
+    bool actualizada = await database.actualizarTarea(newTarea);
+
+    if(!actualizada) {
+      _pendiente('Error al actualizar tarea ${tarea.titulo}');
+    } else {
+      _pendiente('${tarea.titulo} actualizada a ${completada ? "Completada" : "Sin Completar"}');
+    }
+
+    cargarTareas();
   }
 
   // TODO(AdrianoE-Dgz): Implementar Edición de Tarea
