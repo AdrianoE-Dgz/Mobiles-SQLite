@@ -25,6 +25,7 @@ class _TareasPageState extends State<TareasPage> {
     cargarTareas();
   }
 
+  // Carga la lista de tareas
   Future<void> cargarTareas () async {
     setState(() {
       cargando = true;
@@ -77,7 +78,7 @@ class _TareasPageState extends State<TareasPage> {
     _pendiente('Implementar edición de título');
   }
 
-  // TODO(AdrianoE-Dgz): Implementar Eliminación de Tarea
+  // DONE(AdrianoE-Dgz): Implementar Eliminación de Tarea
   void _eliminarTarea(TareaTablaData tarea) async {
     int idEliminar = tarea.id;
 
