@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import '../models/tarea.dart';
+import 'package:gestor_tareas_local/data/sqlite_handler.dart';
 
 // Pantalla base SIN persistencia ni operaciones CRUD implementadas.
 // Conserva las indicaciones TODO para orientar tu trabajo.
@@ -13,31 +13,62 @@ class TareasPage extends StatefulWidget {
 class _TareasPageState extends State<TareasPage> {
   final TextEditingController _tituloController = TextEditingController();
 
-  final List<Tarea> _tareas = [];
+  late AppDatabase database;
+  late List<TareaTablaData> _tareas = [];
+  bool cargando = true;
 
   @override
   void initState() {
     super.initState();
-
+    // Inicializa la base de datos
+    database = AppDatabase();
+    cargarTareas();
   }
 
-  // TODO(AdrianoE-Dgz): Implementar Registro de Tarea
-  void _agregarTarea() {
-    _pendiente('Implementar registro de tarea');
+  Future<void> cargarTareas () async {
+    setState(() {
+      cargando = true;
+    });
+
+    try{
+      _tareas = await database.getAllTareas();
+    } catch (e) {
+      _pendiente(e.toString());
+    }
+
+    if(mounted) {
+      setState(() {
+        cargando = false;
+      });
+    }
+  }
+
+  // DONE(AdrianoE-Dgz): Implementar Registro de Tarea
+  void _agregarTarea() async {
+    String titulo = _tituloController.text.trim();
+    TareaTablaCompanion tarea = TareaTablaCompanion.insert(titulo: titulo, completada: false);
+    
+    int estado = await database.insertarTarea(tarea);
+
+    if(estado == -1){
+      _pendiente("Error al crear tarea");
+    }
+
+    cargarTareas();
   }
 
   // TODO(AdrianoE-Dgz): Implementar Actualización de Tarea
-  void _alternarCompletada(Tarea tarea, bool completada) {
+  void _alternarCompletada(TareaTablaData tarea, bool completada) {
     _pendiente('Implementar actualización de tarea');
   }
 
   // TODO(AdrianoE-Dgz): Implementar Edición de Tarea
-  void _editarTarea(Tarea tarea) {
+  void _editarTarea(TareaTablaData tarea) {
     _pendiente('Implementar edición de título');
   }
 
   // TODO(AdrianoE-Dgz): Implementar Eliminación de Tarea
-  void _eliminarTarea(Tarea tarea) {
+  void _eliminarTarea(TareaTablaData tarea) {
     _pendiente('Implementar eliminación de tarea');
   }
 
@@ -57,7 +88,9 @@ class _TareasPageState extends State<TareasPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Gestor de tareas')),
-      body: Padding(
+      body: cargando
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -80,7 +113,7 @@ class _TareasPageState extends State<TareasPage> {
             const SizedBox(height: 8),
             Expanded(
               child: _tareas.isEmpty
-                  ? const Center(child: Text('Todavía no hay tareas guardadas'))
+                  ? Center(child: Text('Todavía no hay tareas guardadas $_tareas'))
                   : ListView.builder(
                       itemCount: _tareas.length,
                       itemBuilder: (context, index) {

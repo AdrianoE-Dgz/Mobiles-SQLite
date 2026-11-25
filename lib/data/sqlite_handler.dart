@@ -7,11 +7,9 @@ import '../models/tarea.dart';
 
 part 'sqlite_handler.g.dart';
 
-// TODO(AdrianoE-Dgz): Alta escribir un título y guardar una tarea nueva en SQLite. Rechazar títulos vacíos o compuestos solamente por espacios.
-// TODO(AdrianoE-Dgz): Consulta: mostrar las tareas guardadas, incluyendo su título y estado, aun después de cerrar y volver a abrir la aplicación.
 // TODO(AdrianoE-Dgz): Edición: modificar el título de una tarea existente y conservar el cambio tras reiniciar.
 // TODO(AdrianoE-Dgz): Estado: marcar una tarea como completada o pendiente, actualizando la base de datos.
-// TODO(AdrianoE-Dgz): AdrianoE-Dgzminación: borrar una tarea utilizando su identificador; no debe reaparecer al reiniciar.
+// TODO(AdrianoE-Dgz): Eliminación: borrar una tarea utilizando su identificador; no debe reaparecer al reiniciar.
 // TODO(AdrianoE-Dgz): Sin conexión: todas las operaciones deben funcionar sin un servidor ni solicitudes HTTP.
 // TODO(AdrianoE-Dgz): Multiplataforma: diseñar la persistencia para Android, iOS, Windows, Linux, macOS y navegador, con el mismo proyecto Flutter.
 // TODO(AdrianoE-Dgz): Calidad: manejar errores de almacenamiento, liberar recursos cuando corresponda y evitar consultas a la base de datos dentro de build().
@@ -25,9 +23,25 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  // TODO(AdrianoE-Dgz): Alta escribir un título y guardar una tarea nueva en SQLite. Rechazar títulos vacíos o compuestos solamente por espacios.
+  Future<int> insertarTarea(TareaTablaCompanion tarea) async {
+    print("'${tarea.titulo.value}'");
+
+    if(tarea.titulo.value.isEmpty) {
+      return -1;
+    }
+
+    return into(tareaTabla).insert(tarea);
+  }
+
+  // TODO(AdrianoE-Dgz): Consulta: mostrar las tareas guardadas, incluyendo su título y estado, aun después de cerrar y volver a abrir la aplicación.
+  Future<List<TareaTablaData>> getAllTareas() {
+    return select(tareaTabla).get();
+  }
 }
 
-// Lazy loading
+// Lazy loading de base de datos para permitir que cargue después de que carga la después de que comienze la aplicación
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();

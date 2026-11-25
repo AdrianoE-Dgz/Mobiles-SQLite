@@ -1,12 +1,12 @@
 import 'package:catppuccin_flutter/catppuccin_flutter.dart';
-import 'package:gestor_tareas_local/data/sqlite_handler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'screens/tareas_page.dart';
 import 'theme.dart';
 
-late AppDatabase database;
-
 void main() {
+  // Asegura que se hata inicializado flutter
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const GestorTareasApp());
 }
 
