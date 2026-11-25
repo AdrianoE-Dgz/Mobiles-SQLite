@@ -45,13 +45,12 @@ class AppDatabase extends _$AppDatabase {
     return select(tareaTabla).get();
   }
 
-  // TODO(AdrianoE-Dgz): Edición: modificar el título de una tarea existente y conservar el cambio tras reiniciar.
-  Future<bool> modificarTarea(TareaTablaData tarea) {
-    return update(tareaTabla).replace(tarea);
-  }
-
+  // DONE(AdrianoE-Dgz): Edición: modificar el título de una tarea existente y conservar el cambio tras reiniciar.
   // DONE(AdrianoE-Dgz): Estado: marcar una tarea como completada o pendiente, actualizando la base de datos.
-  Future<bool> actualizarTarea(TareaTablaData tarea) {
+  Future<bool> actualizarTarea(TareaTablaData tarea) async {
+    if(tarea.titulo.isEmpty) {
+      return false;
+    }
     return update(tareaTabla).replace(tarea);
   }
 
@@ -60,9 +59,9 @@ class AppDatabase extends _$AppDatabase {
     return (delete(tareaTabla)..where((tarea) => tarea.id.equals(id))).go();
   }
 
-  // TODO(AdrianoE-Dgz): Sin conexión: todas las operaciones deben funcionar sin un servidor ni solicitudes HTTP.
-  // TODO(AdrianoE-Dgz): Multiplataforma: diseñar la persistencia para Android, iOS, Windows, Linux, macOS y navegador, con el mismo proyecto Flutter.
-  // TODO(AdrianoE-Dgz): Calidad: manejar errores de almacenamiento, liberar recursos cuando corresponda y evitar consultas a la base de datos dentro de build().
+  // DONEAdrianoE-Dgz): Sin conexión: todas las operaciones deben funcionar sin un servidor ni solicitudes HTTP.
+  // DONE(AdrianoE-Dgz): Multiplataforma: diseñar la persistencia para Android, iOS, Windows, Linux, macOS y navegador, con el mismo proyecto Flutter.
+  // DONE(AdrianoE-Dgz): Calidad: manejar errores de almacenamiento, liberar recursos cuando corresponda y evitar consultas a la base de datos dentro de build().
 
   Future<int> deleteAll() {
     return delete(tareaTabla).go();

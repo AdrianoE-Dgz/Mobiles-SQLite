@@ -2,7 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:gestor_tareas_local/data/sqlite_handler.dart';
 
 // Pantalla base SIN persistencia ni operaciones CRUD implementadas.
-// Conserva las indicaciones TODO para orientar tu trabajo.
+// Conserva las indicaciones todo para orientar tu trabajo. Todos los todo que están en este archivo los creé yo.
 class TareasPage extends StatefulWidget {
   const TareasPage({super.key});
 
@@ -12,10 +12,13 @@ class TareasPage extends StatefulWidget {
 
 class _TareasPageState extends State<TareasPage> {
   final TextEditingController _tituloController = TextEditingController();
+  TextEditingController? _editarTituloController;
 
   late AppDatabase database;
   late List<TareaTablaData> _tareas = [];
   bool cargando = true;
+  bool editando = false;
+  TareaTablaData? tareaEditando;
 
   @override
   void initState() {
@@ -73,9 +76,40 @@ class _TareasPageState extends State<TareasPage> {
     cargarTareas();
   }
 
-  // TODO(AdrianoE-Dgz): Implementar Edición de Tarea
-  void _editarTarea(TareaTablaData tarea) {
-    _pendiente('Implementar edición de título');
+  // DONEAdrianoE-Dgz): Implementar Edición de Tarea
+  void _mostrarEditar(TareaTablaData tarea) {
+    setState(() {
+      _editarTituloController = TextEditingController();
+      editando = true;
+      tareaEditando = tarea;
+      _editarTituloController!.text = tarea.titulo;
+    });
+  }
+
+  void _editarTarea() async {
+    String titulo = _editarTituloController!.text.trim();
+
+    if(titulo.isEmpty) {
+      _pendiente('Error al actualizar tarea "${tareaEditando!.titulo}"');
+    }
+
+    TareaTablaData newTarea = TareaTablaData(id: tareaEditando!.id, titulo: titulo, completada: tareaEditando!.completada);
+
+    bool actualizada = await database.actualizarTarea(newTarea);
+
+    if(!actualizada) {
+      _pendiente('Error al actualizar tarea ${tareaEditando!.titulo}');
+    } else {
+      _pendiente('"${tareaEditando!.titulo}" actualizada a "$titulo"');
+    }
+
+    setState(() {
+      _editarTituloController!.dispose();
+      editando = false;
+      tareaEditando = null;
+    });
+
+    cargarTareas();
   }
 
   // DONE(AdrianoE-Dgz): Implementar Eliminación de Tarea
@@ -157,7 +191,7 @@ class _TareasPageState extends State<TareasPage> {
                                 IconButton(
                                   tooltip: 'Editar',
                                   icon: const Icon(Icons.edit),
-                                  onPressed: () => _editarTarea(tarea),
+                                  onPressed: () => _mostrarEditar(tarea),
                                 ),
                                 IconButton(
                                   tooltip: 'Eliminar',
@@ -171,9 +205,47 @@ class _TareasPageState extends State<TareasPage> {
                       },
                     ),
             ),
+            editando ? 
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TextField(
+                    controller: _editarTituloController,
+                    decoration: const InputDecoration(
+                      labelText: 'Editar nombre',
+                      border: OutlineInputBorder(),
+                    )
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 5.0,
+                    children: [
+                    FilledButton.icon(
+                      onPressed: _editarTarea,
+                      icon: const Icon(Icons.add),
+                      label: const Text('Editar tarea'),
+                    ),
+                    FilledButton.icon(
+                      onPressed: () => setState(() {
+                        editando = false;
+                        _editarTituloController!.dispose();
+                        tareaEditando = null;
+                      }),
+                      icon: const Icon(Icons.cancel),
+                      label: const Text('Cancelar'),
+                    ),
+                  ],)
+                ],
+              )
+            : const SizedBox(height: 0)
           ],
         ),
       ),
     );
   }
 }
+
+ 
